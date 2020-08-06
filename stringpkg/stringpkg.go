@@ -1,6 +1,7 @@
 package stringpkg
 
 import (
+	"sort"
 	"strconv"
 	"strings"
 )
@@ -60,4 +61,38 @@ func stringpkg(str string) string {
 		}
 	}
 	return result.String()
+}
+
+type words struct {
+	word string
+	size int
+}
+
+func tenwords(text string) []string{
+	sl := strings.Split(text, " ")
+	result := make([]words, 0, len(sl))
+	k := 0
+	lenword := 0
+	for _, word := range sl {
+		for i := 0; i < lenword; i++ {
+			if word == result[i].word {
+				result[i].size++
+				k = 1
+				break
+			}
+		}
+		if k != 1 {
+			result = append(result, words{word, 1})
+			lenword++
+		}
+		k = 0
+	}
+	sort.Slice(result, func(i, j int) bool {
+		return result[i].size > result[j].size
+	})
+	str := make([]string, 0, len(sl))
+	for i := 0; i < 10 && i < lenword; i++ {
+		str = append(str, result[i].word)
+	}
+	return str
 }

@@ -5,6 +5,11 @@ import (
 	"testing"
 )
 
+func TestWrods(t *testing.T) {
+	assert.Equal(t, tenwords("1 2 3 4 5 6 7 8 9 0 kek lol 2 3 3 3 4 4 4 4 4 5 5 5 5 6 6 6 6 6 6 6 7 7 7 77 7 7 7 7 7 kek lol kek lol"), []string{"7", "6", "4", "5", "3", "lol", "kek", "2", "1", "0"})
+	assert.Equal(t, tenwords("da o o da da da kek"), []string{"da", "o", "kek"})
+}
+
 func TestString(t *testing.T) {
 	assert.Equal(t, stringpkg("asd"), "asd")
 	assert.Equal(t, stringpkg("a4b\\4\\5c0d5e\\52qwe\\4\\5"), "aaaab45ddddde55qwe45")
