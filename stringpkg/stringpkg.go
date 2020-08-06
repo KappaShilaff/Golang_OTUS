@@ -69,11 +69,11 @@ type words struct {
 }
 
 func tenwords(text string) []string{
-	sl := strings.Split(text, " ")
-	result := make([]words, 0, len(sl))
+	sli := strings.Split(text, " ")
+	result := make([]words, 0, len(sli))
 	k := 0
 	lenword := 0
-	for _, word := range sl {
+	for _, word := range sli {
 		for i := 0; i < lenword; i++ {
 			if word == result[i].word {
 				result[i].size++
@@ -90,34 +90,34 @@ func tenwords(text string) []string{
 	sort.Slice(result, func(i, j int) bool {
 		return result[i].size > result[j].size
 	})
-	str := make([]string, 0, len(sl))
+	arr := make([]string, 0, len(sli))
 	for i := 0; i < 10 && i < lenword; i++ {
-		str = append(str, result[i].word)
+		arr = append(arr, result[i].word)
 	}
-	return str
+	return arr
 }
 
 func tenwords_map(text string) []string{
-	var set bool
-	sl := strings.Split(text, " ")
-	cache := make(map[string]int, len(sl))
-	for _, word := range sl {
-		_, set = cache[word]
-		if set == false {
+	var isSet bool
+	sli := strings.Split(text, " ")
+	cache := make(map[string]int, len(sli))
+	for _, word := range sli {
+		_, isSet = cache[word]
+		if isSet == false {
 			cache[word] = 1
 		} else {
 			cache[word]++
 		}
 	}
-	str := make([]string, 0, len(cache))
+	arr := make([]string, 0, len(cache))
 	for word := range cache {
-		str = append(str, word)
+		arr = append(arr, word)
 	}
-	sort.Slice(str, func(i, j int) bool {
-		return cache[str[i]] > cache[str[j]]
+	sort.Slice(arr, func(i, j int) bool {
+		return cache[arr[i]] > cache[arr[j]]
 	})
-	if cap(str) > 10 {
-		str = str[0:10]
+	if cap(arr) > 10 {
+		arr = arr[0:10]
 	}
-	return str
+	return arr
 }
