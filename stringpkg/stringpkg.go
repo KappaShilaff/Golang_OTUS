@@ -96,3 +96,28 @@ func tenwords(text string) []string{
 	}
 	return str
 }
+
+func tenwords_map(text string) []string{
+	var set bool
+	sl := strings.Split(text, " ")
+	cache := make(map[string]int, len(sl))
+	for _, word := range sl {
+		_, set = cache[word]
+		if set == false {
+			cache[word] = 1
+		} else {
+			cache[word]++
+		}
+	}
+	str := make([]string, 0, len(cache))
+	for word := range cache {
+		str = append(str, word)
+	}
+	sort.Slice(str, func(i, j int) bool {
+		return cache[str[i]] > cache[str[j]]
+	})
+	if cap(str) > 10 {
+		str = str[0:10]
+	}
+	return str
+}

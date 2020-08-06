@@ -5,8 +5,13 @@ import (
 	"testing"
 )
 
+func TestWrodsmap(t *testing.T) {
+	assert.Equal(t, tenwords_map("kek lol kek lol kek 1 he 2 he 2 he 2 he 2 he 3 5 3 5 3 5 3 5 3 5 3 5 5 4 4 4 4 4 4 4 4 6 6 6 6 6 6 6 6 6 7 7 7 7 7 7 7 7 7 7 7"), []string{"7", "6", "4", "5", "3", "he", "2", "kek", "lol", "1"})
+	assert.Equal(t, tenwords_map("da o o da da da kek"), []string{"da", "o", "kek"})
+}
+
 func TestWrods(t *testing.T) {
-	assert.Equal(t, tenwords("1 2 3 4 5 6 7 8 9 0 kek lol 2 3 3 3 4 4 4 4 4 5 5 5 5 6 6 6 6 6 6 6 7 7 7 77 7 7 7 7 7 kek lol kek lol"), []string{"7", "6", "4", "5", "3", "lol", "kek", "2", "1", "0"})
+	assert.Equal(t, tenwords("kek lol kek lol kek 1 he 2 he 2 he 2 he 2 he 3 5 3 5 3 5 3 5 3 5 3 5 5 4 4 4 4 4 4 4 4 6 6 6 6 6 6 6 6 6 7 7 7 7 7 7 7 7 7 7 7"), []string{"7", "6", "4", "5", "3", "he", "2", "kek", "lol", "1"})
 	assert.Equal(t, tenwords("da o o da da da kek"), []string{"da", "o", "kek"})
 }
 
@@ -33,4 +38,18 @@ func TestItoaIsNegative(t *testing.T) {
 	assert.Equal(t, itoa(-5), "-5", "string -5")
 	assert.Equal(t, itoa(-15), "-15", "string -15")
 	assert.Equal(t, itoa(-9223372036854775808), "-9223372036854775808", "string -9223372036854775808")
+}
+
+func BenchmarkMap(b *testing.B)  {
+	for n := 0; n < b.N; n++ {
+		tenwords_map("kek lol kek lol kek 1 he 2 he 2 he 2 he 2 he 3 5 3 5 3 5 3 5 3 5 3 5 5 4 4 4 4 4 4 4 4 6 6 6 6 6 6 6 6 6 7 7 7 7 7 7 7 7 7 7 7")
+		tenwords_map("da o o da da da kek")
+	}
+}
+
+func BenchmarkNomap(b *testing.B)  {
+	for n := 0; n < b.N; n++ {
+		tenwords("kek lol kek lol kek 1 he 2 he 2 he 2 he 2 he 3 5 3 5 3 5 3 5 3 5 3 5 5 4 4 4 4 4 4 4 4 6 6 6 6 6 6 6 6 6 7 7 7 7 7 7 7 7 7 7 7")
+		tenwords("da o o da da da kek")
+	}
 }
