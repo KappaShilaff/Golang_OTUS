@@ -1,4 +1,4 @@
-package stringpkg
+package main
 
 import (
 	"sort"
@@ -6,8 +6,8 @@ import (
 	"strings"
 )
 
-func itoa(k int) string{
-	var isnegative bool
+func Itoa(k int) string{
+	var isNegative bool
 	var i int
 	if k == 0 {
 		return "0"
@@ -17,7 +17,7 @@ func itoa(k int) string{
 	}
 	if k < 0 {
 		k *= -1
-		isnegative = true
+		isNegative = true
 		i++
 	}
 	for temp := k; temp != 0; temp /= 10 {
@@ -29,22 +29,22 @@ func itoa(k int) string{
 		i--
 		k /= 10
 	}
-	if isnegative == true {
+	if isNegative == true {
 		sl[i - 1] = "-"
 	}
 	return strings.Join(sl, "")
 }
 
-func stringpkg(str string) string {
+func StringPkg(str string) string {
 	sl := strings.Split(str, "")
 	var result strings.Builder
-	lenstr := len(sl)
-	for i := 0; i < lenstr; i++ {
+	lenStr := len(sl)
+	for i := 0; i < lenStr; i++ {
 		if !(sl[i] >= "0" && sl[i] <= "9") {
-			if sl[i] == "\\" && i + 1 < lenstr {
+			if sl[i] == "\\" && i + 1 < lenStr {
 				i++
 			}
-			if i + 1 < lenstr && (sl[i + 1] >= "0" && sl[i + 1] <= "9") {
+			if i + 1 < lenStr && (sl[i + 1] >= "0" && sl[i + 1] <= "9") {
 				for k, err := strconv.Atoi(sl[i + 1]); k > 0; k-- {
 					if err != nil {
 						println(err)
@@ -68,13 +68,13 @@ type words struct {
 	size int
 }
 
-func tenwords(text string) []string{
+func tenWords(text string) []string{
 	sli := strings.Split(text, " ")
 	result := make([]words, 0, len(sli))
 	k := 0
-	lenword := 0
+	lenWord := 0
 	for _, word := range sli {
-		for i := 0; i < lenword; i++ {
+		for i := 0; i < lenWord; i++ {
 			if word == result[i].word {
 				result[i].size++
 				k = 1
@@ -83,7 +83,7 @@ func tenwords(text string) []string{
 		}
 		if k != 1 {
 			result = append(result, words{word, 1})
-			lenword++
+			lenWord++
 		}
 		k = 0
 	}
@@ -91,13 +91,13 @@ func tenwords(text string) []string{
 		return result[i].size > result[j].size
 	})
 	arr := make([]string, 0, len(sli))
-	for i := 0; i < 10 && i < lenword; i++ {
+	for i := 0; i < 10 && i < lenWord; i++ {
 		arr = append(arr, result[i].word)
 	}
 	return arr
 }
 
-func tenwords_map(text string) []string{
+func tenWordsMap(text string) []string{
 	var isSet bool
 	sli := strings.Split(text, " ")
 	cache := make(map[string]int, len(sli))
