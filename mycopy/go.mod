@@ -1,0 +1,1 @@
+module "https://github.com/KappaShilaff/Golang_OTUS/mycopy"
