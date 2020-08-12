@@ -27,7 +27,11 @@ func ReadDir(dir string) (map[string]string, error) {
 		if err != nil {
 			return nil, fmt.Errorf("[ERROR fileText] %v", err)
 		}
-		mp[fileName] = string(fileText[:len(fileText) - 1])
+		if fileText[len(fileText) - 1] == '\n' {
+			mp[fileName] = string(fileText[:len(fileText)-1])
+		} else {
+			mp[fileName] = string(fileText)
+		}
 	}
 	return mp, nil
 }
