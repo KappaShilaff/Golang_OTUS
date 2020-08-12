@@ -49,15 +49,15 @@ func RunCmd(cmd []string, env map[string]string) int {
 }
 
 func main() {
-	kek := os.Args
-	if len(kek) < 3 {
+	args := os.Args
+	if len(args) < 3 {
 		fmt.Println("[ERROR] invalid number of arguments")
 		return
 	}
-	mapEnv, err := ReadDir(kek[1])
+	mapEnv, err := ReadDir(args[1])
 	if err != nil {
 		fmt.Printf("[ERROR mapEnv] %v", err)
 		return
 	}
-	os.Exit(RunCmd(kek[2:], mapEnv))
+	os.Exit(RunCmd(args[2:], mapEnv))
 }
