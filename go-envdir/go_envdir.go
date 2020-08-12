@@ -37,11 +37,14 @@ func RunCmd(cmd []string, env map[string]string) int {
 		_ = os.Setenv(envName, envString)
 	}
 	cmdCommand := exec.Command(cmd[0], cmd[1:]...)
-	out, err := cmdCommand.Output()
-	if err != nil {
-		fmt.Printf("%v", err)
+	cmdCommand.Stdout = os.Stdout
+	cmdCommand.Stderr = os.Stderr
+	cmdCommand.Stdin = os.Stdin
+	if err := cmdCommand.Run() ; err != nil {
+		if exitError, ok := err.(*exec.ExitError); ok {
+			return exitError.ExitCode()
+		}
 	}
-	fmt.Printf("%s", out)
 	return 0
 }
 
@@ -56,5 +59,5 @@ func main() {
 		fmt.Printf("[ERROR mapEnv] %v", err)
 		return
 	}
-	RunCmd(kek[2:], mapEnv)
+	os.Exit(RunCmd(kek[2:], mapEnv))
 }
