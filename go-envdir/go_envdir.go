@@ -16,7 +16,6 @@ func ReadDir(dir string) (map[string]string, error) {
 	if len(out) == 0 {
 		return nil, nil
 	}
-	//fmt.Printf("%v", string(out))
 	outSl := strings.Split(string(out), "\n")
 
 	mp := make(map[string]string, len(outSl) - 1)
@@ -28,10 +27,8 @@ func ReadDir(dir string) (map[string]string, error) {
 		if err != nil {
 			return nil, fmt.Errorf("[ERROR fileText] %v", err)
 		}
-		//fileText[len(fileText) - 1] = 0
 		mp[fileName] = string(fileText[:len(fileText) - 1])
 	}
-	//fmt.Printf("%v", mp)
 	return mp, nil
 }
 
@@ -39,10 +36,7 @@ func RunCmd(cmd []string, env map[string]string) int {
 	for envName, envString := range env {
 		_ = os.Setenv(envName, envString)
 	}
-	cmdString := strings.Join(cmd, " ")
-	//fmt.Printf("%s\n", cmd)
-	//fmt.Printf("%s\n", cmdString)
-	cmdCommand := exec.Command(cmdString)
+	cmdCommand := exec.Command(cmd[0], cmd[1:]...)
 	out, err := cmdCommand.Output()
 	if err != nil {
 		fmt.Printf("%v", err)
