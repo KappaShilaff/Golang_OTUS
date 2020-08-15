@@ -112,8 +112,12 @@ func (t *CrStruct) PrintAllEvents() error {
 	}
 	if len(t.Date) == 0 {
 		fmt.Printf("Zero events!")
+		return nil
 	}
-	DateSl, _ := ConvertMapToStruct(&t.Date)
+	DateSl, err := ConvertMapToStruct(&t.Date)
+	if err != nil {
+		return fmt.Errorf("[PrintlALLEvents ERROR]%v", err)
+	}
 	for _, Date := range DateSl {
 		day := Date.EDate
 		s := fmt.Sprintf("%d.%02d.%02d	|", day.Age, day.Month, day.Day)

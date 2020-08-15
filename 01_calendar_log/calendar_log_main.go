@@ -6,10 +6,11 @@ package main
 import (
 	"context"
 	"flag"
-	"fmt"
 	"github.com/heetch/confita"
 	"github.com/heetch/confita/backend/file"
 	"github.com/heetch/confita/backend/flags"
+	"go.uber.org/zap"
+	"log"
 )
 
 type Config struct {
@@ -23,7 +24,23 @@ func init() {
 	flag.StringVar(&conf, "conf", "", "file to read from")
 }
 
+//func Logging() *os.File{
+//	f, err := os.OpenFile("info.log", os.O_RDWR | os.O_CREATE | os.O_APPEND, 0666)
+//	if err != nil {
+//		log.Fatalf("error opening file: %v", err)
+//	}
+//	log.SetOutput(f)
+//	return f
+//}
+
 func main() {
+	//f := Logging()
+	logger, err := zap.NewDevelopment()
+	if err != nil {
+		log.Fatalf("can't initialize zap logger: %v", err)
+	}
+	slogger := logger.Sugar()
+	defer slogger.Sync()
 	flag.Parse()
 	if conf == "" {
 		conf = "./config"
@@ -33,19 +50,23 @@ func main() {
 		file.NewBackend(conf + "/config.json"),
 		flags.NewBackend(),
 	)
-	err := loader.Load(context.Background(), &cfg)
+	err = loader.Load(context.Background(), &cfg)
 	if err != nil {
-		fmt.Printf("[CONFIG ERROR]%s\n", err)
+		slogger.Fatalf("[CONFIG]%s\n", err)
 		return
 	}
 	JsSl, err := ReadJsonDir(cfg.JsonDir)
 	if err != nil {
-		fmt.Printf("[Invalid JsonDir]%v\n", err)
+		slogger.Fatalf("[Invalid JsonDir]%v\n", err)
 		return
 	}
 	kek := CrStruct{}
 	for _, Js := range JsSl {
-		Js.JsonInsert(&kek)
+		if err = Js.JsonInsert(&kek); err != nil {
+			slogger.Warn(err)
+		}
 	}
-	_ = kek.PrintAllEvents()
+	if err = kek.PrintAllEvents() ; err != nil {
+		slogger.Warn(err)
+	}
 }

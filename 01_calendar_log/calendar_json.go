@@ -18,11 +18,16 @@ type EventJson struct {
 	Day   int    `json:""`
 }
 
-func (t EventJson) JsonInsert(d InserIventInterface) {
-	_ = d.EventInsert(EventDate{t.Age, t.Month, t.Day}, EventTime{t.Start, t.End, t.Name})
+func (t EventJson) JsonInsert(d InserIventInterface) error{
+	err := d.EventInsert(EventDate{t.Age, t.Month, t.Day}, EventTime{t.Start, t.End, t.Name})
+	if err != nil {
+		return fmt.Errorf("[Insert ERROR] %s. %v", t.Name, err)
+	}
+	return nil
 }
 
 func ReadJsonDir(dir string) ([]EventJson, error) {
+	var errSum error
 	out, err := exec.Command("ls", dir).Output()
 	if err != nil {
 		return nil, fmt.Errorf("[ERROR ls] %v", err)
@@ -31,17 +36,19 @@ func ReadJsonDir(dir string) ([]EventJson, error) {
 		return nil, nil
 	}
 	outSl := strings.Split(string(out), "\n")
-
 	mp := make([]EventJson, len(outSl)-1)
 	for i, fileName := range outSl {
 		fileText, err := ioutil.ReadFile(dir + "/" + fileName)
 		if fileName == "" {
-			break
+			continue
 		}
 		if err != nil {
-			return nil, fmt.Errorf("[ERROR fileText] %v", err)
+			errSum = fmt.Errorf("%v\n[ERROR fileText] %v", errSum, err)
+		} else {
+			if err = json.Unmarshal(fileText, &mp[i]); err != nil {
+				errSum = fmt.Errorf("%v\n[ERROR Unmarshal] %v", errSum, err)
+			}
 		}
-		_ = json.Unmarshal(fileText, &mp[i])
 	}
-	return mp, nil
+	return mp, errSum
 }
