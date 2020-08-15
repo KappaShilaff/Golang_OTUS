@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"sort"
 )
 
 type EventTime struct {
@@ -83,6 +84,28 @@ func (t *CrStruct) EventAllNameRemove(name string) {
 	}
 }
 
+type DateSortStruct struct {
+	sortInt int
+	EDate EventDate
+}
+
+func ConvertMapToStruct(m *map[EventDate][]EventTime) ([]DateSortStruct, error) {
+	if len(*m) == 0 {
+		return []DateSortStruct{}, fmt.Errorf("[ERROR ConvertMtoS] Zero map")
+	}
+	d := make([]DateSortStruct, len(*m))
+	i := 0
+	for date := range *m {
+		d[i].EDate = date
+		d[i].sortInt = date.Day + date.Month * 100 + date.Age * 10000
+		i++
+	}
+	sort.Slice(d, func(i, j int) bool {
+		return d[i].sortInt < d[j].sortInt
+	})
+	return d, nil
+}
+
 func (t *CrStruct) PrintAllEvents() error {
 	if t.Date == nil {
 		return fmt.Errorf("[ERROR] nil map")
@@ -90,9 +113,11 @@ func (t *CrStruct) PrintAllEvents() error {
 	if len(t.Date) == 0 {
 		fmt.Printf("Zero events!")
 	}
-	for day, date := range t.Date {
+	DateSl, _ := ConvertMapToStruct(&t.Date)
+	for _, Date := range DateSl {
+		day := Date.EDate
 		s := fmt.Sprintf("%d.%02d.%02d	|", day.Age, day.Month, day.Day)
-		for _, time := range date {
+		for _, time := range t.Date[day] {
 			s += fmt.Sprintf(" %02d:%02d-%02d:%02d %s|", time.Start/100, time.Start%100, time.End/100, time.End%100, time.Name)
 		}
 		fmt.Printf("%s\n", s)
