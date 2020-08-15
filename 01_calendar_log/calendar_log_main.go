@@ -4,25 +4,41 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"fmt"
+	"github.com/heetch/confita"
+	"github.com/heetch/confita/backend/file"
+	"github.com/heetch/confita/backend/flags"
 )
 
+type Config struct {
+	JsonDir string `config:"jsonDir"`
+}
+
 var conf string
-var jsonDir string
+var JsonDir string
 
 func init() {
-	flag.StringVar(&conf, "from", "", "file to read from")
-	flag.StringVar(&jsonDir, "json", "", "files to read from")
+	flag.StringVar(&conf, "conf", "", "file to read from")
 }
 
 func main() {
 	flag.Parse()
-	if jsonDir == "" {
-		fmt.Printf("-json dir PLZ\n")
+	if conf == "" {
+		conf = "./config"
+	}
+	cfg := Config{JsonDir}
+	loader := confita.NewLoader(
+		file.NewBackend(conf + "/config.json"),
+		flags.NewBackend(),
+	)
+	err := loader.Load(context.Background(), &cfg)
+	if err != nil {
+		fmt.Printf("[CONFIG ERROR]%s\n", err)
 		return
 	}
-	JsSl, err := ReadJsonDir(jsonDir)
+	JsSl, err := ReadJsonDir(cfg.JsonDir)
 	if err != nil {
 		fmt.Printf("[Invalid JsonDir]%v\n", err)
 		return

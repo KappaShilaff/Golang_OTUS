@@ -18,7 +18,7 @@ type EventDate struct {
 }
 
 type CrStruct struct {
-	Date map[EventDate][]EventTime `json:""`
+	Date map[EventDate][]EventTime
 }
 
 func IsValid(time EventTime, baseOfTime []EventTime) bool {
